@@ -51,17 +51,23 @@ int main()
 
 		switch(nFSM) {
 			case 0:
+				setColor(36,40);
 				printf("%s의 세계에 오신걸 환영합니다. v. %d \r\n",game_name,game_version);
-				printf("게임을 시작할까요? \r\n 시작[p], 나가기[x]\r\n");
+				printf("\r\n게임을 시작할까요? \r\n 시작[p], 나가기[x]\r\n");
+				setColor(0,0);
 				//printf("select => [p,x] \r\n");
 				break;
 			case 1:
-				printf("명령을 선택하세요, \r\n\
-	i(up),j(left),k(right), \r\n\
-	m(down),s(show map),x(exit)\r\n");
+				setColor(36,40);
+				printf("\r\n명령을 선택하세요. \r\n\
+ 위[i],왼쪽[j],오른쪽[k], \r\n\
+ 아래[m],맵 보기[s],나가기[x]\r\n");
+				setColor(0,0);
 				break;
 			case 2://미션클리어
-				printf("\r\n다음 스테이지로 가겠습니까? \r\n 다음 스테이지[y] \r\n 그만두기[n]");
+				setColor(36,40);
+				printf("\r\n다음 스테이지로 가겠습니까? \r\n 예[y] \r\n 아니오[n]");
+				setColor(0,0);
 				break;
 
 				}
@@ -88,10 +94,11 @@ int main()
 					door_ypos = 5;
 					door_xpos = 0;
 
-					printf("게임을 시작합니다.");
+					printf("게임을 시작합니다.\r\n");
 					break;
 				case 'x':
 					bLoop = 0;
+					printf("다음에 또 봐요~ \r\n");
 					break;
 			}
 		}
@@ -105,7 +112,7 @@ int main()
 					break;
 				case 'x':
 					bLoop = 0;
-					printf("Bye bye~ \r\n");
+					printf("다음에 또 봐요~ \r\n");
 					break;
 			}
 		}
@@ -116,7 +123,7 @@ int main()
 					break;
 				case 'n':
 					bLoop=0;
-					printf("Bye bye~ \r\n");
+					printf("다음에 또 봐요~ \r\n");
 					break;
 			}
 

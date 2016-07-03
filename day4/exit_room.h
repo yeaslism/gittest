@@ -67,19 +67,23 @@ void move_player(char cmd)
 
 			case 4: //잠긴문
 				if(player_inven ==1) {
-					printf("미션클리어 \r\n");
+					setColor(33,40);
+					printf("---미션클리어--- \r\n");
+					setColor(0,0);
 					nFSM =2;
 				}
 				else {
-					printf("문이 잠겼습니다. \r\n");
+					setColor(33,40);
+					printf("---문이 잠겼습니다.--- \r\n");
 					player_ypos = old_ypos;
 					player_xpos = old_xpos;
+					setColor(0,0);
 
 				}
 				break;
 			case 5:
-				setColor(34,40);
-				printf("키를 얻었습니다.\r\n");
+				setColor(33,40);
+				printf("---키를 얻었습니다.---\r\n");
 				player_inven = 1;
 				setColor(0,0);
 
