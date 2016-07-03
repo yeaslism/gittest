@@ -56,6 +56,7 @@ void map_printCell(int rawdata)
 		case 4: //잠긴문
 			setColor(37,44);
 			printf("m");
+			setColor(0,0);
 			break;
 		case 5:
 			setColor(33,40);

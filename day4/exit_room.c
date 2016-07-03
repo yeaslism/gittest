@@ -66,7 +66,7 @@ int main()
 				break;
 			case 2://미션클리어
 				setColor(36,40);
-				printf("\r\n다음 스테이지로 가겠습니까? \r\n 예[y] \r\n 아니오[n]");
+				printf("\r\n다음 스테이지로 가겠습니까? \r\n 예[y] \r\n 아니오[n] \r\n");
 				setColor(0,0);
 				break;
 
@@ -118,16 +118,29 @@ int main()
 		}
 		else if(nFSM == 2){
 			switch(cmd) {
-				case 'y':
-					map_drawAll(world_map2);	
-					break;
+				case 'y': //다음 스테이지
+				nFSM = 1;
+				//map_drawAll(world_map2);
+
+				player_ypos = 1;
+				player_xpos = 1;
+
+				key_ypos = 1;
+				key_xpos = 4;
+					
+				door_ypos = 2;
+				door_xpos = 7;
+
+
+				break;
+				
 				case 'n':
-					bLoop=0;
-					printf("다음에 또 봐요~ \r\n");
-					break;
+				bLoop=0;
+				printf("다음에 또 봐요~ \r\n");
+				break;
 			}
 
-			//nFSM = 3;
+			//nFSM = 0;
 
 		}
 
