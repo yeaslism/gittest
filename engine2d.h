@@ -41,19 +41,25 @@ void map_printCell(int rawdata)
 			printf(" ");
 			break;			
 		case 1: //벽
+			setColor(37,41);
 			printf("#");
+			setColor(0,0);
 			break;
-		case 2: //문
-			printf("=");
+		case 2: //열린문
+			printf("M");
 			break;
-		case 3:
+		case 3: //게이머
+			setColor(30,42);
 			printf("A");
+			setColor(0,0);
 			break;
-		case 4:
+		case 4: //잠긴문
 			printf("m");
 			break;
 		case 5:
+			setColor(33,40);
 			printf("K");
+			setColor(0,0);
 			break;
 		default:
 			printf(" ");

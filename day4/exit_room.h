@@ -1,4 +1,4 @@
-#ifndef __EXIT_ROOM_H__
+#ifndef __EXIT_ROOM_H__i
 #define __EXIT_ROOM_H__
 
 int buffer_map[64];
@@ -11,6 +11,13 @@ int nFSM = 0;
 
 int player_xpos;
 int player_ypos;
+
+int key_xpos;
+int key_ypos;
+
+int door_xpos;
+int door_ypos;
+
 int player_inven; //0:없음, 1:키보유
 
 void move_player(char cmd)
@@ -53,33 +60,39 @@ void move_player(char cmd)
 				player_xpos = old_xpos;
 				break;
 
-			case 2: //문
+			case 2: //열린문
 				printf("미션 클리어 \r\n");
-				nFSM = 2;
+					nFSM = 2;
 				break;
 
-			case 4:
+			case 4: //잠긴문
 				if(player_inven ==1) {
 					printf("미션클리어 \r\n");
 					nFSM =2;
 				}
 				else {
+					printf("문이 잠겼습니다. \r\n");
 					player_ypos = old_ypos;
 					player_xpos = old_xpos;
 
 				}
 				break;
 			case 5:
-				printf("키를 얻었습니다. \r\n");
+				setColor(34,40);
+				printf("키를 얻었습니다.\r\n");
 				player_inven = 1;
+				setColor(0,0);
 
 				break;
 
 
 
-
-
 		}
+	
+	if (player_inven == 1){
+		buffer_map [ key_xpos + key_ypos*8 ] = 0;
+		buffer_map [ door_xpos + door_ypos*8 ] = 2;
+	}
 	
 	
 	buffer_map[ player_xpos + player_ypos*8 ] = 3;
