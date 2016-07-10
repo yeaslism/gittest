@@ -16,9 +16,14 @@ struct timespec work_timer;
 double acc_tick,last_tick;
 
 double rock_acc_tick;
+double bomb_acc_tick;
 int rock_xpos,rock_ypos;
+int bomb_xpos,bomb_ypos;
 int rock_pos_table[8] ={ 3,5,7,0,2,1,4,6 };
+int bomb_pos_table[8] ={ 6,4,2,1,0,3,5,2 };
 int rock_cur_table_index = 0;
+int bomb_cur_table_index = 0;
+
 int bLoop = 1;
 
 int car_xpos,car_ypos;
@@ -72,13 +77,62 @@ void rg_PlayGame(double delta_tick)
 				}
 			}
 
+			//폭탄 움직이기
+			bomb_acc_tick += delta_tick;
+			if(bomb_acc_tick > 0.7) {
+				bomb_acc_tick = 0;
+				bomb_ypos += 1;
+				//화면 끝 도달
+				if(bomb_ypos >= 8) {
+					bomb_ypos = 0;
+					bomb_cur_table_index++;
+					bomb_cur_table_index %= 8;
+					bomb_xpos = bomb_pos_table [ bomb_cur_table_index];
+				}
+			}
+
+
 			//게임로직 판정
-			if(rock_ypos == car_ypos && rock_xpos == car_xpos)
+			if( (rock_ypos == car_ypos && rock_xpos == car_xpos) || (bomb_ypos == car_ypos && bomb_xpos == car_xpos))
 			{
-				bLoop = 0;
+				//bLoop = 0;
+
 				setColor(36,40);
-				printf("- Game Over - \r\n");	
-				setColor(0,0);
+				printf("\r\n- Game Over - \r\n");
+				printf("\r\n재도전[Press 'p'] , 나가기[Press 'q'] \r\n");	
+
+				char ch = getch();
+				if(ch == 'p') {
+					system("clear");
+					bLoop = 1;
+					nStep = 0;
+					nFSM = 0;
+
+					//버퍼 초기화
+					for(int i=0;i<64;i++){
+						screen_buffer[i] = 0;
+					}
+
+					set_conio_terminal_mode();
+
+					acc_tick = last_tick = 0;
+					system("clear");
+
+					car_ypos = 7;
+					car_xpos = 1;
+
+					rock_ypos = 0;
+					rock_xpos = rock_pos_table[ rock_cur_table_index ];
+
+					bomb_ypos = 0;
+					bomb_xpos = bomb_pos_table[ bomb_cur_table_index ];
+
+				}
+				else if(ch == 'q'){
+					printf("Bye bye~ \r\n");
+					setColor(0,0);
+					bLoop = 0;
+				}
 			}
 
 			//버퍼 초기화
@@ -98,7 +152,18 @@ void rg_PlayGame(double delta_tick)
 				drawGame(8,8,screen_buffer);
 
 			}
+
+			//폭탄 그리기
+			screen_buffer[ bomb_ypos*8 + bomb_xpos ] =3;		
+
+			acc_tick += delta_tick;
+			if(acc_tick > 0.1 | bLoop == 0){
+				acc_tick =0;
+				drawGame(8,8,screen_buffer);
+
+			}
 			break;
+	
 	}
 
 
@@ -144,6 +209,9 @@ int main()
 
 	rock_ypos = 0;
 	rock_xpos = rock_pos_table[ rock_cur_table_index ];
+
+	bomb_ypos = 0;
+	bomb_xpos = bomb_pos_table[ bomb_cur_table_index ];
 
 	while(bLoop) {
 

@@ -15,11 +15,22 @@ void drawGame(int mx,int my,char *pBuf)
 					putchar('.');
 					break;
 				case 1:
+					setColor(32,40);
 					putchar('#');
+					setColor(0,0);
 					break;
 				case 2:
+					setColor(33,40);
 					putchar('A');
+					setColor(0,0);
 					break;
+				case 3:
+					setColor(31,40);
+					putchar('@');
+					setColor(0,0);
+					break;
+				
+
 			}
 		}
 	
