@@ -28,11 +28,11 @@ int main()
 
 
 	town.node[0] = &dungeon_1;
-	//dungeon_1.node[0] = &town;
-	dungeon_1.node[0] = &dungeon_2;
-	//dungeon_2.node[0] = &dungeon_1;
-	dungeon_2.node[0] = &dungeon_3;
-	//dungeon_3.node[0] = &dungeon_2;
+	dungeon_1.node[0] = &town;
+	dungeon_1.node[1] = &dungeon_2;
+	dungeon_2.node[0] = &dungeon_1;
+	dungeon_2.node[1] = &dungeon_3;
+	dungeon_3.node[0] = &dungeon_2;
 
 	
 	_S_AREA *pCurrentArea = &town;
@@ -52,7 +52,6 @@ int main()
 	printf("  이동하기 [Type ''move 이동장소'] \r\n");
 	setColor(37,40);	
 	printf("  town , dungeon1 , dungeon2, dungeon3 \r\n\r\n");
-	//printf("\r\n");
 	setColor(33,40);
 	printf("  끝내기 [Type 'exit'] \r\n");	
 	printf("***************************************\r\n");
@@ -80,7 +79,7 @@ int main()
 				//puts(pNode->m_szName);
 				if(!strcmp(pNode->m_szName,pszArea)) {
 					setColor(33,40);
-					printf("  .......이동 성공!! \r\n");
+					printf("  .......이동 성공! \r\n");
 					setColor(0,0);
 					pCurrentArea = pNode;
 				}
