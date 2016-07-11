@@ -92,7 +92,13 @@ int main()
 			for(int ix=0;ix<MapObject.m_header.m_nWidth;ix++) {
 				MapObject.m_pBuf[ ix + ypos*MapObject.m_header.m_nWidth ] = tile_index;
 			}
+		}
+		else if(!strcmp(pTemp,"save")) {
+			//save filename
 
+		}
+		else if(!strcmp(pTemp,"load")) {
+			//load filename
 		}
 
 
