@@ -49,7 +49,7 @@ int main()
 			0,MapObject.m_header.m_nWidth,
 			MapObject.m_header.m_nWidth,
 			MapObject.m_pBuf,
-			TilePalette	
+			TilePalette
 			);
 		}
 		else if(!strcmp(pTemp,"new")) {
@@ -67,9 +67,31 @@ int main()
 		else if(!strcmp(pTemp,"put")) {
 			//put 1 2 1 (x y tile_index)
 			int x,y,tile_index;
+			x = atoi(strtok(NULL," "));
+			y = atoi(strtok(NULL," "));
+			tile_index = atoi(strtok(NULL," "));
 
-			MapObject.m_pBuf[] = tile_index;
+			MapObject.m_pBuf[ y*MapObject.m_header.m_nWidth + x ] = tile_index;
 
+		}
+		else if(!strcmp(pTemp,"hline")) {
+			//hline 1 1 (x tile_index)
+			int xpos, tile_index;
+			xpos = atoi(strtok(NULL," "));
+			tile_index = atoi(strtok(NULL," "));
+
+			for(int iy=0;iy<MapObject.m_header.m_nWidth;iy++){
+				MapObject.m_pBuf[ iy*MapObject.m_header.m_nHeight + xpos ] = tile_index;
+			}
+		}
+		else if(!strcmp(pTemp,"vline")) {
+			int ypos, tile_index;
+			ypos = atoi(strtok(NULL," "));
+			tile_index = atoi(strtok(NULL," "));
+
+			for(int ix=0;ix<MapObject.m_header.m_nWidth;ix++) {
+				MapObject.m_pBuf[ ix + ypos*MapObject.m_header.m_nWidth ] = tile_index;
+			}
 
 		}
 
