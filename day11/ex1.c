@@ -95,19 +95,36 @@ int main()
 		}
 		else if(!strcmp(pTemp,"save")) {
 			//save filename
-			char *szFileName = strtok(NULL," ");
+			char *pTemp = strtok(NULL," ");
+			FILE *pf = fopen(pTemp,"wb");
+			fwrite(&MapObject.m_header,sizeof(MapObject.m_header),1,pf);	
+			int nSize = MapObject.m_header.m_nWidth * MapObject.m_header.m_nHeight;
+			fwrite(MapObject.m_pBuf,nSize,1,pf);
 
-			FILE *pfile = fopen(szFileName,"w");
-
-			 
-
-
-			
-			fclose(pfile);
-
+			fclose(pf);
+			puts("Save OK");
 		}
 		else if(!strcmp(pTemp,"load")) {
 			//load filename
+			char *pTemp = strtok(NULL," ");
+			FILE *pf = fopen(pTemp,"rb");
+			fread(&MapObject.m_header,sizeof(_S_MAP_HEADER),1,pf);
+
+			if(MapObject.m_pBuf) {
+			free(MapObject.m_pBuf);
+			}
+			int nSize = MapObject.m_header.m_nWidth * MapObject.m_header.m_nHeight;
+			MapObject.m_pBuf = malloc(nSize);
+			
+			fread(MapObject.m_pBuf,nSize,1,pf);
+			
+			for(int i=0;i<nSize;i++) {
+				printf("%d,",MapObject.m_pBuf[i]);
+			}
+
+			puts("Load OK");	
+
+			fclose(pf);
 		}
 
 
