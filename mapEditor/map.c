@@ -45,7 +45,7 @@ void map_PutTile(_S_MAP_OBJECT *pObj, int x,int y,int nTileIndex)
 {
 	//클리핑 처리
 	if(x >= 0 && y >= 0) {
-		if(x < pObj->m_header.m_nWidth && x < pObj->m_header.m_nHeight) {
+		if(x < pObj->m_header.m_nWidth && y < pObj->m_header.m_nHeight) {
 			pObj->m_pBuf[ pObj->m_header.m_nWidth * y + x ] = nTileIndex;
 		}
 	}
