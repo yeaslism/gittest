@@ -17,8 +17,10 @@ int main()
 
 	MapObject.m_header.m_nSkima = 1;
 	MapObject.m_pBuf = NULL;
-	char TilePalette[] = {'.','#','@','%'};
+	//char TilePalette[] = {'.','#','@','%'};
 
+	puts("Text TileMap Editor v1.1");
+	
 	while(bLoop)
 	{
 		char szCmd[32];
@@ -32,7 +34,7 @@ int main()
 		}
 
 		else if(!strcmp(pTemp,"dump")) {
-			map_dump( &MapObject,TilePalette);
+			map_dump( &MapObject,Default_TilePalette);
 		}
 		else if(!strcmp(pTemp,"new")) {
 			// new 8 4
