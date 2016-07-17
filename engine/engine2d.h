@@ -7,6 +7,7 @@ void reset_terminal_mode();
 void set_conio_terminal_mode();
 int kbhit();
 int getch();
+<<<<<<< HEAD
 
 struct termios orig_termios;
 
@@ -118,6 +119,11 @@ void map_drawAll(int *pMap)
 	}
 }
 
+=======
+void setColor(int fore_color,int backg_color);
+void gotoxy(int x,int y);
+
+>>>>>>> da4652049abe833a9b1ebf0eb588e446c759bb30
 
 
 #endif
