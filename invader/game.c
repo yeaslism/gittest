@@ -29,6 +29,20 @@ _S_Plane gPlayerObject;
 _S_BULLET_OBJECT gBulletObject[32];
 _S_ALIEN_OBJECT gAlienObject[8];
 
+double getDist(_S_BULLET_OBJECT *pBullet,_S_Plane *pPlane)
+{
+	double bullet_pos_x = pBullet->m_fXpos;
+	double bullet_pos_y = pBullet->m_fYpos;
+
+	double target_pos_x = pPlane->m_fXpos;
+	double target_pos_y = pPlane->m_fYpos;
+
+	double vx = target_pos_x - bullet_pos_x;
+	double vy = target_pos_y - bullet_pos_y;
+	double dist = sqrt(vx*vx+vy*vy);
+
+	return dist;
+}
 
 int main()
 {
@@ -42,9 +56,6 @@ int main()
 	map_init(&gPlayerModel);
 	map_load(&gPlayerModel,"plane1.dat");
 
-	Plane_init(&gPlayerObject,&gPlayerModel,17,30);
-	gPlayerObject.m_nFSM = 1;
-
 	map_init(&gBulletModel);
 	map_load(&gBulletModel,"plasma.dat");
 
@@ -53,7 +64,17 @@ int main()
 
 	//double TablePosition[] = {0,6.0,12};
 	double TablePosition_x[] = {0,25,12};
-	double TablePosition_y[] = {2,7,13};
+	double TablePosition_y[] = {2,7,15};
+
+	Plane_init(&gPlayerObject,&gPlayerModel,17,30);
+	gPlayerObject.m_nFSM = 1;
+
+	for (int i=0;i<3;i++)
+	{
+		_S_BULLET_OBJECT *pObj = &gBulletObject[i];
+		bullet_init(pObj,0,0,0,&gBulletModel);
+		pObj->m_nFSM = 1;
+	}
 
 	for (int i=0;i<3;i++)
 	{
@@ -64,8 +85,9 @@ int main()
 		pObj->m_fXpos = TablePosition_x[i];
 		pObj->m_fYpos = TablePosition_y[i];
 		pObj->m_nFSM = 1;
-	}
 
+		gAlienObject[i].m_pBullet = &gBulletObject[i];
+	}
 
 	system("clear");
 
@@ -89,16 +111,34 @@ int main()
 			gPlayerObject.pfApply(&gPlayerObject,delta_tick,ch);
 		}
 
+		for (int i=0;i<3;i++) 
+		{
+			_S_ALIEN_OBJECT *pObj = &gAlienObject[i];
+			pObj->pfApply(pObj,delta_tick);
+		}
 
+		for (int i=0;i<3;i++)
+		{
+			_S_BULLET_OBJECT *pObj = &gBulletObject[i];
+			pObj->pfApply(pObj,delta_tick);
+		}
 
-	for (int i=0;i<3;i++) 
-	{
-		_S_ALIEN_OBJECT *pObj = &gAlienObject[i];
-		pObj->pfApply(pObj,delta_tick);
-	}
-	
-	
-	
+		for(int i=0;i<3;i++)
+		{
+			_S_BULLET_OBJECT *pObj = &gBulletObject[i];
+			if(pObj->m_nFSM != 0) {
+				double dist = getDist(pObj,&gPlayerObject);
+
+				if(dist < 0.25) {  //비행기랑 충돌하면 총알 sleep상태
+					pObj->m_nFSM = 0;
+					gPlayerObject.m_nFSM = 0;
+					printf("\r\n - Gave Over - \r\n");
+					bLoop = 0;
+				}
+
+			}
+		}
+
 		//타이밍 계산
 		acc_tick += delta_tick;
 		if(acc_tick > 0.1) {
@@ -111,7 +151,14 @@ int main()
 				_S_ALIEN_OBJECT *pObj = &gAlienObject[i];
 				pObj->pfDraw(pObj,&gScreenBuf[1]);
 			}
-			
+
+			for(int i=0;i<3;i++) 
+			{
+				_S_BULLET_OBJECT *pObj = &gBulletObject[i];
+				pObj->pfDraw(pObj,&gScreenBuf[1]);
+			}
+
+
 			map_dump(&gScreenBuf[1],Default_TilePalette);
 			acc_tick = 0;
 		}

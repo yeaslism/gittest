@@ -64,7 +64,7 @@ int main()
 				c = sqrt(vx*vx + vy*vy);
 				vx /= c;
 				vy /= c;
-
+				
 				bullet_fire(&gBulletObject,
 				fire_x,fire_y,
 				10.0,vx,vy,
