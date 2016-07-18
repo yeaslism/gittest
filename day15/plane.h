@@ -2,6 +2,10 @@
 #define __PLANE_H__
 
 typedef struct _S_Plane {
+	
+	int m_nFSM;
+	int m_nStep;
+	
 	double m_fXpos;
 	double m_fYpos;
 
