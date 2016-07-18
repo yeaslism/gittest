@@ -33,14 +33,17 @@ _S_ALIEN_OBJECT gAlienObject[8];
 int main()
 {
 
-	for(int i=0;i<2;i++)
+	for(int i=0;i<3;i++)
 	{
 		map_init(&gScreenBuf[i]);
-		map_new(&gScreenBuf[i],35,16);
+		map_new(&gScreenBuf[i],35,32);
 	}
 
 	map_init(&gPlayerModel);
 	map_load(&gPlayerModel,"plane1.dat");
+
+	Plane_init(&gPlayerObject,&gPlayerModel,17,30);
+	gPlayerObject.m_nFSM = 1;
 
 	map_init(&gBulletModel);
 	map_load(&gBulletModel,"plasma.dat");
@@ -48,14 +51,18 @@ int main()
 	map_init(&gAlienModel);
 	map_load(&gAlienModel,"alien.dat");
 
-	double TablePosition[] = {0,6.0,12};
+	//double TablePosition[] = {0,6.0,12};
+	double TablePosition_x[] = {0,25,12};
+	double TablePosition_y[] = {2,7,13};
 
-	for (int i=0;i<2;i++)
+	for (int i=0;i<3;i++)
 	{
 		_S_ALIEN_OBJECT *pObj = &gAlienObject[i];
 		alien_init(pObj,&gAlienModel);
-		pObj->m_fXpos = TablePosition[i];
-		pObj->m_fYpos = 2;
+		//pObj->m_fXpos = TablePosition[i];
+		//pObj->m_fYpos = 2;
+		pObj->m_fXpos = TablePosition_x[i];
+		pObj->m_fYpos = TablePosition_y[i];
 		pObj->m_nFSM = 1;
 	}
 
@@ -79,11 +86,12 @@ int main()
 				bLoop = 0;
 				puts("Bye~ \r");
 			}
+			gPlayerObject.pfApply(&gPlayerObject,delta_tick,ch);
 		}
 
 
 
-	for (int i=0;i<2;i++) 
+	for (int i=0;i<3;i++) 
 	{
 		_S_ALIEN_OBJECT *pObj = &gAlienObject[i];
 		pObj->pfApply(pObj,delta_tick);
@@ -96,8 +104,9 @@ int main()
 		if(acc_tick > 0.1) {
 			gotoxy(0,0);
 			map_drawTile(&gScreenBuf[0],0,0,&gScreenBuf[1]);
-			
-			for(int i=0;i<2;i++) 
+			gPlayerObject.pfDraw(&gPlayerObject,&gScreenBuf[1]);
+
+			for(int i=0;i<3;i++) 
 			{
 				_S_ALIEN_OBJECT *pObj = &gAlienObject[i];
 				pObj->pfDraw(pObj,&gScreenBuf[1]);
