@@ -23,10 +23,12 @@ _S_MAP_OBJECT gScreenBuf[2];
 
 _S_MAP_OBJECT gPlayerModel;
 _S_MAP_OBJECT gBulletModel;
+_S_MAP_OBJECT gPlayerBulletModel;
 _S_MAP_OBJECT gAlienModel;
 
 _S_Plane gPlayerObject;
 _S_BULLET_OBJECT gBulletObject[32];
+_S_BULLET_OBJECT gPlayerBulletObject[32];
 _S_ALIEN_OBJECT gAlienObject[8];
 
 double getDist(_S_BULLET_OBJECT *pBullet,_S_Plane *pPlane)
@@ -56,6 +58,9 @@ int main()
 	map_init(&gPlayerModel);
 	map_load(&gPlayerModel,"plane1.dat");
 
+	map_init(&gPlayerBulletModel);
+	map_load(&gPlayerBulletModel,"bullet1.dat");
+
 	map_init(&gBulletModel);
 	map_load(&gBulletModel,"plasma.dat");
 
@@ -74,6 +79,11 @@ int main()
 		_S_BULLET_OBJECT *pObj = &gBulletObject[i];
 		bullet_init(pObj,0,0,0,&gBulletModel);
 		pObj->m_nFSM = 1;
+	}
+
+	for (int i=0;i<sizeof(gPlayerBulletObject)/sizeof(_S_BULLET_OBJECT);i++)
+	{
+		bullet_init(&gPlayerBulletObject[i],0,0,0,&gPlayerBulletModel);
 	}
 
 	for (int i=0;i<3;i++)
@@ -108,6 +118,18 @@ int main()
 				bLoop = 0;
 				puts("Bye~ \r");
 			}
+			else if(ch == 'j') {
+				for (int i=0;i<sizeof(gPlayerBulletObject)/sizeof(_S_BULLET_OBJECT);i++) {
+					_S_BULLET_OBJECT *pObj = &gPlayerBulletObject[i];
+					if(pObj->m_nFSM == 0) {
+						pObj->pfFire(pObj,0,0,10,0,0,5.0);
+						break;
+					}
+				}
+	
+			}
+
+
 			gPlayerObject.pfApply(&gPlayerObject,delta_tick,ch);
 		}
 
