@@ -81,7 +81,8 @@ int main()
 		pObj->m_nFSM = 1;
 	}
 
-	for (int i=0;i<sizeof(gPlayerBulletObject)/sizeof(_S_BULLET_OBJECT);i++)
+	//for (int i=0;i<sizeof(gPlayerBulletObject)/sizeof(_S_BULLET_OBJECT);i++)
+	for (int i=0;i<32;i++)
 	{
 		bullet_init(&gPlayerBulletObject[i],0,0,0,&gPlayerBulletModel);
 	}
@@ -119,10 +120,10 @@ int main()
 				puts("Bye~ \r");
 			}
 			else if(ch == 'j') {
-				for (int i=0;i<sizeof(gPlayerBulletObject)/sizeof(_S_BULLET_OBJECT);i++) {
+				for (int i=0;i<32;i++) {
 					_S_BULLET_OBJECT *pObj = &gPlayerBulletObject[i];
 					if(pObj->m_nFSM == 0) {
-						pObj->pfFire(pObj,0,0,10,0,0,5.0);
+						pObj->pfFire(pObj,gPlayerObject.m_fXpos,gPlayerObject.m_fYpos,10,vx,vy,5.0);
 						break;
 					}
 				}
@@ -144,6 +145,11 @@ int main()
 			_S_BULLET_OBJECT *pObj = &gBulletObject[i];
 			pObj->pfApply(pObj,delta_tick);
 		}
+
+		for (int i=0;i<32;i++) {
+			_S_BULLET_OBJECT *pObj = &gPlayerBulletObject[i];
+			pObj->pfApply(pObj,delta_tick);
+		}		
 
 		for(int i=0;i<3;i++)
 		{
@@ -177,6 +183,11 @@ int main()
 			for(int i=0;i<3;i++) 
 			{
 				_S_BULLET_OBJECT *pObj = &gBulletObject[i];
+				pObj->pfDraw(pObj,&gScreenBuf[1]);
+			}
+
+			for (int i=0;i<32;i++) {
+				_S_BULLET_OBJECT *pObj = &gPlayerBulletObject[i];
 				pObj->pfDraw(pObj,&gScreenBuf[1]);
 			}
 
