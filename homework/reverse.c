@@ -4,7 +4,7 @@
 void reverse(char array[])
 {
 	int i;
-	for(i=strlen(array)-2;i>=0;i--) {
+	for(i=strlen(array)-1;i>=0;i--) {
 		printf("%d ",array[i]);
 	}
 }

@@ -120,10 +120,23 @@ int main()
 				puts("Bye~ \r");
 			}
 			else if(ch == 'j') {
+
+				double bullet_pos_x = gPlayerObject.m_fXpos;
+				double bullet_pos_y = gPlayerObject.m_fYpos;
+
+				double target_pos_x = gAlienObject->m_fXpos;
+				double target_pos_y = gAlienObject->m_fYpos;
+
+				double vx = target_pos_x - bullet_pos_x;
+				double vy = target_pos_y - bullet_pos_y;
+				double dist = sqrt(vx*vx + vy*vy);
+				vx /=dist;
+				vy /=dist;
+
 				for (int i=0;i<32;i++) {
 					_S_BULLET_OBJECT *pObj = &gPlayerBulletObject[i];
 					if(pObj->m_nFSM == 0) {
-						pObj->pfFire(pObj,gPlayerObject.m_fXpos,gPlayerObject.m_fYpos,10,vx,vy,5.0);
+						pObj->pfFire(pObj,bullet_pos_x,bullet_pos_y,10,vx,vy,5.0);
 						break;
 					}
 				}

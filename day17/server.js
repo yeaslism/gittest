@@ -38,18 +38,20 @@ net.createServer((socket) => {
                 case 200: //위치정보 전송
                 {
                     let index = data.readInt16LE(4)
-                    object_list[index].x = data.readFloatLE(6)
-                    object_list[index].y = data.readFloatLE(10)
+                    object_list[index].x = data.readFloatLE(8)
+                    object_list[index].y = data.readFloatLE(12)
                     console.log(object_list)
+                    console.log(data)
                 }
                     break;
                 case 201: //위치정보 요청
                 {
                     let index = data.readInt16LE(4)
-                    let buff = new Buffer(10)
+                    let buff = new Buffer(12)
                     buff.writeInt16LE(1004,0)
-                    buff.writeFloatLE(object_list[index].x,2)
-                    buff.writeFloatLE(object_list[index].y,6)
+                    buff.writeInt16LE(index,2)
+                    buff.writeFloatLE(object_list[index].x,4)
+                    buff.writeFloatLE(object_list[index].y,8)
                     socket.write(buff)
 
                 }
