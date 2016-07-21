@@ -68,7 +68,7 @@ int main()
 	for(int i=0;i<3;i++)
 	{
 		map_init(&gScreenBuf[i]);
-		map_new(&gScreenBuf[i],35,32);
+		map_new(&gScreenBuf[i],50,50);
 	}
 
 	map_init(&gPlayerModel);
@@ -85,9 +85,9 @@ int main()
 
 	//double TablePosition[] = {0,6.0,12};
 	double TablePosition_x[] = {0,25,12};
-	double TablePosition_y[] = {2,7,12};
+	double TablePosition_y[] = {4,10,18};
 
-	Plane_init(&gPlayerObject,&gPlayerModel,17,30);
+	Plane_init(&gPlayerObject,&gPlayerModel,25,48);
 	gPlayerObject.m_nFSM = 1;
 
 	for (int i=0;i<3;i++)
@@ -138,24 +138,24 @@ int main()
 			else if(ch == 'j') {
 
 				/*double bullet_pos_x = gPlayerObject.m_fXpos;
-				double bullet_pos_y = gPlayerObject.m_fYpos;
+				  double bullet_pos_y = gPlayerObject.m_fYpos;
 
-				double target_pos_x = gAlienObject->m_fXpos;
-				double target_pos_y = gAlienObject->m_fYpos;
+				  double target_pos_x = gAlienObject->m_fXpos;
+				  double target_pos_y = gAlienObject->m_fYpos;
 
-				double vx = target_pos_x - bullet_pos_x;
-				double vy = target_pos_y - bullet_pos_y;
-				double dist = sqrt(vx*vx + vy*vy);
-				vx /=dist;
-				vy /=dist;
+				  double vx = target_pos_x - bullet_pos_x;
+				  double vy = target_pos_y - bullet_pos_y;
+				  double dist = sqrt(vx*vx + vy*vy);
+				  vx /=dist;
+				  vy /=dist;
 
-				for (int i=0;i<32;i++) {
-					_S_BULLET_OBJECT *pObj = &gPlayerBulletObject[i];
-					if(pObj->m_nFSM == 0) {
-						pObj->pfFire(pObj,bullet_pos_x,bullet_pos_y,10,vx,vy,5.0);
-						break;
-					}
-				}*/
+				  for (int i=0;i<32;i++) {
+				  _S_BULLET_OBJECT *pObj = &gPlayerBulletObject[i];
+				  if(pObj->m_nFSM == 0) {
+				  pObj->pfFire(pObj,bullet_pos_x,bullet_pos_y,10,vx,vy,5.0);
+				  break;
+				  }
+				  }*/
 
 				for (int i=0;i<32;i++) {
 					_S_BULLET_OBJECT *pObj = &gPlayerBulletObject[i];
@@ -165,11 +165,12 @@ int main()
 					}
 				}
 
-	
+
 			}
 
 
 			gPlayerObject.pfApply(&gPlayerObject,delta_tick,ch);
+
 		}
 
 		for (int i=0;i<3;i++) 
@@ -208,20 +209,42 @@ int main()
 			_S_BULLET_OBJECT *pObj = &gPlayerBulletObject[i];
 			if(pObj->m_nFSM != 0) {
 				double dist = getDist2(pObj,&gAlienObject[0]);
-				double dist1 = getDist2(pObj,&gAlienObject[1]);
-				double dist2 = getDist2(pObj,&gAlienObject[2]);
-				
-				if(dist2 < 0.25) {
+
+				if(dist < 1) {
 					pObj->m_nFSM = 0;
-					gAlienObject->m_nFSM = 0;
+					gAlienObject[0].m_nFSM = 0;
+				}
+			}
+		}
+
+		for (int i=0;i<32;i++) {
+			_S_BULLET_OBJECT *pObj = &gPlayerBulletObject[i];
+			if(pObj->m_nFSM != 0) {
+				double dist = getDist2(pObj,&gAlienObject[1]);
+
+				if(dist < 1) {
+					pObj->m_nFSM = 0;
+					gAlienObject[1].m_nFSM = 0;
+				}
+			}
+		}
+
+		for (int i=0;i<32;i++) {
+			_S_BULLET_OBJECT *pObj = &gPlayerBulletObject[i];
+			if(pObj->m_nFSM != 0) {
+				double dist = getDist2(pObj,&gAlienObject[2]);
+
+				if(dist < 1) {
+					pObj->m_nFSM = 0;
+					gAlienObject[2].m_nFSM = 0;
 				}
 			}
 		}
 
 		//타이밍 계산
 		acc_tick += delta_tick;
-		
-		
+
+
 		if(acc_tick > 0.1) {
 			gotoxy(0,0);
 			map_drawTile(&gScreenBuf[0],0,0,&gScreenBuf[1]);
