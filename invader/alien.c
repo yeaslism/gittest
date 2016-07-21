@@ -27,7 +27,7 @@ static void Apply(_S_ALIEN_OBJECT *pObj,double deltaTick)
 		case 2: //move right
 			pObj->m_fXpos += (deltaTick * speed);
 			if(pObj->m_fXpos > 35) {
-				pObj->m_fYpos += 2;
+				pObj->m_fYpos += 1;
 
 				pObj->m_nFSM = 3;
 				pObj->m_nStep = 0;
@@ -46,7 +46,7 @@ static void Apply(_S_ALIEN_OBJECT *pObj,double deltaTick)
 		case 3: //move left
 			pObj->m_fXpos -= (deltaTick * speed);
 			if(pObj->m_fXpos <= 0) {
-				pObj->m_fYpos += 2;
+				pObj->m_fYpos -= 1;
 
 				pObj->m_nFSM = 2;
 				pObj->m_nStep = 0;

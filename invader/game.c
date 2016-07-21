@@ -46,6 +46,22 @@ double getDist(_S_BULLET_OBJECT *pBullet,_S_Plane *pPlane)
 	return dist;
 }
 
+double getDist2(_S_BULLET_OBJECT *pBullet,_S_ALIEN_OBJECT *pAlien)
+{
+	double bullet_pos_x = pBullet->m_fXpos;
+	double bullet_pos_y = pBullet->m_fYpos;
+
+	double target_pos_x = pAlien->m_fXpos;
+	double target_pos_y = pAlien->m_fYpos;
+
+	double vx = target_pos_x - bullet_pos_x;
+	double vy = target_pos_y - bullet_pos_y;
+	double dist = sqrt(vx*vx+vy*vy);
+
+	return dist;
+}
+
+
 int main()
 {
 
@@ -69,7 +85,7 @@ int main()
 
 	//double TablePosition[] = {0,6.0,12};
 	double TablePosition_x[] = {0,25,12};
-	double TablePosition_y[] = {2,7,15};
+	double TablePosition_y[] = {2,7,12};
 
 	Plane_init(&gPlayerObject,&gPlayerModel,17,30);
 	gPlayerObject.m_nFSM = 1;
@@ -121,7 +137,7 @@ int main()
 			}
 			else if(ch == 'j') {
 
-				double bullet_pos_x = gPlayerObject.m_fXpos;
+				/*double bullet_pos_x = gPlayerObject.m_fXpos;
 				double bullet_pos_y = gPlayerObject.m_fYpos;
 
 				double target_pos_x = gAlienObject->m_fXpos;
@@ -139,7 +155,16 @@ int main()
 						pObj->pfFire(pObj,bullet_pos_x,bullet_pos_y,10,vx,vy,5.0);
 						break;
 					}
+				}*/
+
+				for (int i=0;i<32;i++) {
+					_S_BULLET_OBJECT *pObj = &gPlayerBulletObject[i];
+					if(pObj->m_nFSM == 0) {
+						pObj->pfFire(pObj,gPlayerObject.m_fXpos,gPlayerObject.m_fYpos,10,0,-1,5.0);
+						break;
+					}
 				}
+
 	
 			}
 
@@ -176,12 +201,27 @@ int main()
 					printf("\r\n - Gave Over - \r\n");
 					bLoop = 0;
 				}
+			}
+		}
 
+		for (int i=0;i<32;i++) {
+			_S_BULLET_OBJECT *pObj = &gPlayerBulletObject[i];
+			if(pObj->m_nFSM != 0) {
+				double dist = getDist2(pObj,&gAlienObject[0]);
+				double dist1 = getDist2(pObj,&gAlienObject[1]);
+				double dist2 = getDist2(pObj,&gAlienObject[2]);
+				
+				if(dist2 < 0.25) {
+					pObj->m_nFSM = 0;
+					gAlienObject->m_nFSM = 0;
+				}
 			}
 		}
 
 		//타이밍 계산
 		acc_tick += delta_tick;
+		
+		
 		if(acc_tick > 0.1) {
 			gotoxy(0,0);
 			map_drawTile(&gScreenBuf[0],0,0,&gScreenBuf[1]);
