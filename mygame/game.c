@@ -243,7 +243,7 @@ int main()
 					for (int i=0;i<32;i++) {
 						_S_BULLET_OBJECT *pObj = &gPlayerBulletObject[i];
 						if(pObj->m_nFSM == 0) {
-							pObj->pfFire(pObj,gPlayerObject.m_fXpos,gPlayerObject.m_fYpos,10,0,-1,5.0);
+							pObj->pfFire(pObj,gPlayerObject.m_fXpos,gPlayerObject.m_fYpos,10,0,-1,3.0);
 							break;
 						}
 					}
@@ -266,7 +266,7 @@ int main()
 					for (int i=0;i<32;i++) {
 						_S_BULLET_OBJECT *pObj = &gTwoBulletObject[i];
 						if(pObj->m_nFSM == 0) {
-							pObj->pfFire(pObj,bullet_pos_x,bullet_pos_y,10,vx,vy,5.0);
+							pObj->pfFire(pObj,bullet_pos_x,bullet_pos_y,10,vx,vy,3.0);
 							break;
 						}
 					}
@@ -316,7 +316,7 @@ int main()
 				if(pObj->m_nFSM != 0) {
 					double dist = getDist(pObj,&gPlayerObject);
 
-					if(dist < 0.25) {  //비행기랑 충돌하면 총알 sleep상태
+					if(dist < 1) {  //비행기랑 충돌하면 총알 sleep상태
 						pObj->m_nFSM = 0;
 						gPlayerObject.m_nFSM = 0;
 						printf("\r\n - Gave Over - \r\n");
@@ -348,7 +348,7 @@ int main()
 				if(pObj->m_nFSM != 0) {
 					double dist = getDist2(pObj,&gAlienObject[0]);
 
-					if(dist < 1) {
+					if(dist < 0.7) {
 						pObj->m_nFSM = 0;
 						gAlienObject[0].m_nFSM = 0;
 					}
@@ -360,7 +360,7 @@ int main()
 				if(pObj->m_nFSM != 0) {
 					double dist = getDist2(pObj,&gAlienObject[1]);
 
-					if(dist < 1) {
+					if(dist < 0.7) {
 						pObj->m_nFSM = 0;
 						gAlienObject[1].m_nFSM = 0;
 					}
@@ -372,7 +372,7 @@ int main()
 				if(pObj->m_nFSM != 0) {
 					double dist = getDist2(pObj,&gAlienObject[2]);
 
-					if(dist < 1) {
+					if(dist < 0.7) {
 						pObj->m_nFSM = 0;
 						gAlienObject[2].m_nFSM = 0;
 					}
@@ -384,7 +384,7 @@ int main()
 				if(pObj->m_nFSM != 0) {
 					double dist = getDist2(pObj,&gAlienObject[0]);
 
-					if(dist < 1) {
+					if(dist < 0.7) {
 						pObj->m_nFSM = 0;
 						gAlienObject[0].m_nFSM = 0;
 					}
@@ -396,7 +396,7 @@ int main()
 				if(pObj->m_nFSM != 0) {
 					double dist = getDist2(pObj,&gAlienObject[1]);
 
-					if(dist < 1) {
+					if(dist < 0.7) {
 						pObj->m_nFSM = 0;
 						gAlienObject[1].m_nFSM = 0;
 					}
@@ -408,7 +408,7 @@ int main()
 				if(pObj->m_nFSM != 0) {
 					double dist = getDist2(pObj,&gAlienObject[2]);
 
-					if(dist < 1) {
+					if(dist < 0.7) {
 						pObj->m_nFSM = 0;
 						gAlienObject[2].m_nFSM = 0;
 					}
