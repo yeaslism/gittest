@@ -147,6 +147,14 @@ int main()
 		gAlienObject[i].m_pBullet = &gBulletObject[i];
 	}
 
+
+	alien_init(&gBossObject,&gBossModel);
+	gBossObject.m_fXpos = 25;
+	gBossObject.m_fYpos = 5;
+	gBossObject.m_nFSM = 1;
+
+
+
 	system("clear");
 
 	set_conio_terminal_mode();
@@ -212,6 +220,9 @@ int main()
 				gPlayerObject.pfApply(&gPlayerObject,delta_tick,ch);
 
 			}
+			
+			gBossObject.pfApply(&gBossObject,delta_tick);
+
 
 			for (int i=0;i<3;i++) 
 			{
@@ -282,17 +293,6 @@ int main()
 			}
 
 
-			if(gAlienObject[0].m_nFSM==0 && gAlienObject[1].m_nFSM==0 && gAlienObject[2].m_nFSM==0)
-			{
-				alien_init(&gBossObject,&gBossModel);
-				gBossObject.m_fXpos = 25;
-				gBossObject.m_fYpos = 15;
-				gBossObject.m_nFSM = 1;
-
-				gBossObject.pfDraw(&gBossObject,&gScreenBuf[1]);
-			}
-
-
 
 			//타이밍 계산
 			acc_tick += delta_tick;
@@ -321,6 +321,10 @@ int main()
 					pObj->pfDraw(pObj,&gScreenBuf[1]);
 				}
 
+				if(gAlienObject[0].m_nFSM==0 && gAlienObject[1].m_nFSM==0 && gAlienObject[2].m_nFSM==0)
+				{
+					gBossObject.pfDraw(&gBossObject,&gScreenBuf[1]);
+				}
 
 				map_dump(&gScreenBuf[1],Default_TilePalette);
 				acc_tick = 0;
