@@ -26,15 +26,21 @@ _S_MAP_OBJECT gScreenBuf[2];
 
 _S_MAP_OBJECT gPlayerModel;
 _S_MAP_OBJECT gBulletModel;
+_S_MAP_OBJECT gBabyModel;
 _S_MAP_OBJECT gPlayerBulletModel;
+_S_MAP_OBJECT gTwoBulletModel;
 _S_MAP_OBJECT gAlienModel;
 _S_MAP_OBJECT gBossModel;
+_S_MAP_OBJECT gClearModel;
 
 _S_Plane gPlayerObject;
 _S_BULLET_OBJECT gBulletObject[32];
+_S_BULLET_OBJECT gBabyObject[32];
 _S_BULLET_OBJECT gPlayerBulletObject[32];
+_S_BULLET_OBJECT gTwoBulletObject[32];
 _S_ALIEN_OBJECT gAlienObject[8];
 _S_ALIEN_OBJECT gBossObject;
+_S_Plane gClearObject;
 
 double getDist(_S_BULLET_OBJECT *pBullet,_S_Plane *pPlane)
 {
@@ -98,15 +104,24 @@ int main()
 		map_init(&gScreenBuf[i]);
 		map_new(&gScreenBuf[i],50,50);
 	}
+	
+	map_init(&gClearModel);
+	map_load(&gClearModel,"clear.dat");
 
 	map_init(&gPlayerModel);
-	map_load(&gPlayerModel,"plane1.dat");
+	map_load(&gPlayerModel,"myplane.dat");
 
 	map_init(&gPlayerBulletModel);
-	map_load(&gPlayerBulletModel,"bullet1.dat");
+	map_load(&gPlayerBulletModel,"missile.dat");
+
+	map_init(&gTwoBulletModel);
+	map_load(&gTwoBulletModel,"two.dat");
 
 	map_init(&gBulletModel);
 	map_load(&gBulletModel,"plasma.dat");
+
+	map_init(&gBabyModel);
+	map_load(&gBabyModel,"baby.dat");
 
 	map_init(&gAlienModel);
 	map_load(&gAlienModel,"alien.dat");
@@ -118,8 +133,11 @@ int main()
 	double TablePosition_x[] = {0,25,12};
 	double TablePosition_y[] = {3,13,26};
 
-	Plane_init(&gPlayerObject,&gPlayerModel,25,48);
+	Plane_init(&gPlayerObject,&gPlayerModel,25,46);
 	gPlayerObject.m_nFSM = 1;
+
+	Plane_init(&gClearObject,&gClearModel,33,25);
+	gClearObject.m_nFSM = 1;
 
 	for (int i=0;i<3;i++)
 	{
@@ -128,10 +146,23 @@ int main()
 		pObj->m_nFSM = 1;
 	}
 
+	for (int i=0;i<3;i++)
+	{
+		_S_BULLET_OBJECT *pObj = &gBabyObject[i];
+		bullet_init(pObj,0,0,0,&gBabyModel);
+		pObj->m_nFSM = 1;
+	}
+
+
 	//for (int i=0;i<sizeof(gPlayerBulletObject)/sizeof(_S_BULLET_OBJECT);i++)
 	for (int i=0;i<32;i++)
 	{
 		bullet_init(&gPlayerBulletObject[i],0,0,0,&gPlayerBulletModel);
+	}
+
+	for (int i=0;i<32;i++)
+	{
+		bullet_init(&gTwoBulletObject[i],0,0,0,&gTwoBulletModel);
 	}
 
 	for (int i=0;i<3;i++)
@@ -148,11 +179,15 @@ int main()
 	}
 
 
-	alien_init(&gBossObject,&gBossModel);
-	gBossObject.m_fXpos = 25;
-	gBossObject.m_fYpos = 5;
-	gBossObject.m_nFSM = 1;
-
+	for (int i=0;i<3;i++)
+	{
+		alien_init(&gBossObject,&gBossModel);
+		gBossObject.m_fXpos = 25;
+		gBossObject.m_fYpos = 5;
+		gBossObject.m_nFSM = 1;
+	
+		gBossObject.m_pBullet = &gBabyObject[i];
+	}
 
 
 	system("clear");
@@ -215,6 +250,28 @@ int main()
 
 
 				}
+				else if(ch== 'k') {
+					double bullet_pos_x = gPlayerObject.m_fXpos;
+					double bullet_pos_y = gPlayerObject.m_fYpos;
+
+					double target_pos_x = gAlienObject->m_fXpos;
+					double target_pos_y = gAlienObject->m_fYpos;
+
+					double vx = target_pos_x - bullet_pos_x;
+					double vy = target_pos_y - bullet_pos_y;
+					double dist = sqrt(vx*vx + vy*vy);
+					vx /=dist;
+					vy /=dist;
+
+					for (int i=0;i<32;i++) {
+						_S_BULLET_OBJECT *pObj = &gTwoBulletObject[i];
+						if(pObj->m_nFSM == 0) {
+							pObj->pfFire(pObj,bullet_pos_x,bullet_pos_y,10,vx,vy,5.0);
+							break;
+						}
+					}
+
+				}
 
 
 				gPlayerObject.pfApply(&gPlayerObject,delta_tick,ch);
@@ -236,10 +293,22 @@ int main()
 				pObj->pfApply(pObj,delta_tick);
 			}
 
+
+			for (int i=0;i<3;i++)
+			{
+				_S_BULLET_OBJECT *pObj = &gBabyObject[i];
+				pObj->pfApply(pObj,delta_tick);
+			}
+
 			for (int i=0;i<32;i++) {
 				_S_BULLET_OBJECT *pObj = &gPlayerBulletObject[i];
 				pObj->pfApply(pObj,delta_tick);
 			}		
+
+			for (int i=0;i<32;i++) {
+				_S_BULLET_OBJECT *pObj = &gTwoBulletObject[i];
+				pObj->pfApply(pObj,delta_tick);
+			}
 
 			for(int i=0;i<3;i++)
 			{
@@ -255,6 +324,24 @@ int main()
 					}
 				}
 			}
+
+			for(int i=0;i<3;i++)
+			{
+				_S_BULLET_OBJECT *pObj = &gBabyObject[i];
+				if(pObj->m_nFSM != 0) {
+					double dist = getDist(pObj,&gPlayerObject);
+
+					if(dist < 1) {  //baby가 비행기랑 충돌하면 비행기 sleep상태
+						pObj->m_nFSM = 0;
+						gPlayerObject.m_nFSM = 0;
+						printf("\r\n - Gave Over - \r\n");
+						bLoop = 0;
+					}
+				}
+			}
+
+
+
 
 			for (int i=0;i<32;i++) {
 				_S_BULLET_OBJECT *pObj = &gPlayerBulletObject[i];
@@ -292,7 +379,67 @@ int main()
 				}
 			}
 
+			for (int i=0;i<32;i++) {
+				_S_BULLET_OBJECT *pObj = &gTwoBulletObject[i];
+				if(pObj->m_nFSM != 0) {
+					double dist = getDist2(pObj,&gAlienObject[0]);
 
+					if(dist < 1) {
+						pObj->m_nFSM = 0;
+						gAlienObject[0].m_nFSM = 0;
+					}
+				}
+			}
+
+			for (int i=0;i<32;i++) {
+				_S_BULLET_OBJECT *pObj = &gTwoBulletObject[i];
+				if(pObj->m_nFSM != 0) {
+					double dist = getDist2(pObj,&gAlienObject[1]);
+
+					if(dist < 1) {
+						pObj->m_nFSM = 0;
+						gAlienObject[1].m_nFSM = 0;
+					}
+				}
+			}
+
+			for (int i=0;i<32;i++) {
+				_S_BULLET_OBJECT *pObj = &gTwoBulletObject[i];
+				if(pObj->m_nFSM != 0) {
+					double dist = getDist2(pObj,&gAlienObject[2]);
+
+					if(dist < 1) {
+						pObj->m_nFSM = 0;
+						gAlienObject[2].m_nFSM = 0;
+					}
+				}
+			}
+
+			//보스 죽이기
+
+			for (int i=0;i<32;i++) {
+				_S_BULLET_OBJECT *pObj = &gPlayerBulletObject[i];
+				if(pObj->m_nFSM != 0) {
+					double dist = getDist2(pObj,&gBossObject);
+
+					if(dist < 0.2) {
+						pObj->m_nFSM = 0;
+						gBossObject.m_nFSM = 0;
+					}
+				}
+			}
+
+			for (int i=0;i<32;i++) {
+				_S_BULLET_OBJECT *pObj = &gTwoBulletObject[i];
+				if(pObj->m_nFSM != 0) {
+					double dist = getDist2(pObj,&gBossObject);
+
+					if(dist < 0.2) {
+						pObj->m_nFSM = 0;
+						gBossObject.m_nFSM = 0;
+					}
+				}
+			}
 
 			//타이밍 계산
 			acc_tick += delta_tick;
@@ -316,14 +463,32 @@ int main()
 					pObj->pfDraw(pObj,&gScreenBuf[1]);
 				}
 
+
 				for (int i=0;i<32;i++) {
 					_S_BULLET_OBJECT *pObj = &gPlayerBulletObject[i];
+					pObj->pfDraw(pObj,&gScreenBuf[1]);
+				}
+
+				for (int i=0;i<32;i++) {
+					_S_BULLET_OBJECT *pObj = &gTwoBulletObject[i];
 					pObj->pfDraw(pObj,&gScreenBuf[1]);
 				}
 
 				if(gAlienObject[0].m_nFSM==0 && gAlienObject[1].m_nFSM==0 && gAlienObject[2].m_nFSM==0)
 				{
 					gBossObject.pfDraw(&gBossObject,&gScreenBuf[1]);
+
+					for(int i=0;i<3;i++) 
+					{
+						_S_BULLET_OBJECT *pObj = &gBabyObject[i];
+						pObj->pfDraw(pObj,&gScreenBuf[1]);
+					}
+				}
+
+				if(gBossObject.m_nFSM == 0)
+				{
+					gClearObject.pfDraw(&gClearObject,&gScreenBuf[1]);
+					gPlayerObject.m_nFSM = 0;
 				}
 
 				map_dump(&gScreenBuf[1],Default_TilePalette);
